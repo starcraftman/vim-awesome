@@ -1,5 +1,7 @@
 rethinkdb==1.13.0-0
 Flask==0.9
+# Had to upgrade to run
+# requests==2.6.0
 requests==1.2.3
 lxml==3.2.1
 html5lib==1.0b1
