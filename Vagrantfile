@@ -14,7 +14,6 @@ wget -qO- https://download.rethinkdb.com/apt/pubkey.gpg | sudo apt-key add -
 apt-get update -y
 apt-get dist-upgrade -y
 apt-get autoremove -y
-
 apt-get install -y \
     build-essential automake autopoint autoconf pkg-config cmake ninja ccache \
     git mercurial vim zip unzip unrar rar p7zip-full tree htop dfc \
@@ -22,7 +21,7 @@ apt-get install -y \
     ruby ruby-dev python-dev pandoc sphinx-common \
     libyaml-dev libxml2-dev libxslt-dev zlib1g-dev \
     lubuntu-desktop
-# lubuntu is only for gui if forwarding not working
+# lubuntu adds many packages, installs a small light gui you can use firefox from to see site
 
 # Webpack expects node
 ln -s /usr/bin/nodejs /usr/bin/node
@@ -32,7 +31,6 @@ python /tmp/get-pip.py
 pip install -U Flask Flask-Cache PyYAML html5lib lxml nose python-dateutil \
     requests rethinkdb termcolor configparser python-slugify
 
-cd /vagrant
 gem update --system
 gem install bundler
 npm install -g webpack
@@ -51,20 +49,22 @@ if [ ! -e ~/.my_scripts ]; then
   vim +PlugInstall +qa >/dev/null 2>&1
 fi
 
-# FIXME: Not sure mounted in time
-echo "cd /vagramt && make >/dev/null 2>&1 &" >> ~/.lbashrc
-
 cd /vagrant
 bundle install
 npm install
-make &
+
+echo "alias fstart='make -C /vagrant >/tmp/server.log 2>&1 &'" >> ~/.lbashrc
+echo "alias flog='tail -n 50 /tmp/server.log" >> ~/.lbashrc
+make -C /vagrant &
 sleep 5
 make init_db
-if [ -f rethinkdb_dump_2015-12-15.tar.gz ]; then
-  rethinkdb restore --force -i vim_awesome ./rethinkdb_dump_2015-12-15.tar.gz
-else
-  echo "Save time, put dump in project root."
+if [ ! -f rethinkdb_dump_2015-12-15.tar.gz ]; then
+  echo "Please wait while the database dump is downloaded to the project root."
+  echo "Do not delete it and it will be reused should you need to provision anoter vagrant."
+  curl -fLo rethinkdb_dump_2015-12-15.tar.gz https://dl.dropboxusercontent.com/u/18795947/rethinkdb_dump_2015-12-15.tar.gz
 fi
+rethinkdb restore --force -i vim_awesome ./rethinkdb_dump_2015-12-15.tar.gz
+echo "Please execute on host: vagrant reload"
 EOF
 
 Vagrant.require_version ">= 1.5.0"
