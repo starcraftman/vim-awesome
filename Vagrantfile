@@ -11,27 +11,31 @@
 $root = <<EOF
 source /etc/lsb-release && echo "deb http://download.rethinkdb.com/apt $DISTRIB_CODENAME main" | sudo tee /etc/apt/sources.list.d/rethinkdb.list
 wget -qO- https://download.rethinkdb.com/apt/pubkey.gpg | sudo apt-key add -
-sudo apt-get update -y
-sudo apt-get install -y build-essential automake autopoint autoconf pkg-config cmake \
- ninja ccache git mercurial vim rar p7zip-full python-dev \
- ruby ruby-dev pandoc sphinx-common \
- silversearcher-ag rethinkdb npm tree \
- libyaml-dev libxml2-dev libxslt-dev zlib1g-dev \
- lubuntu-desktop
+apt-get update -y
+apt-get dist-upgrade -y
+apt-get autoremove -y
+
+apt-get install -y \
+    build-essential automake autopoint autoconf pkg-config cmake ninja ccache \
+    git mercurial vim zip unzip unrar rar p7zip-full tree htop dfc \
+    rethinkdb npm exuberant-ctags silversearcher-ag ack-grep \
+    ruby ruby-dev python-dev pandoc sphinx-common \
+    libyaml-dev libxml2-dev libxslt-dev zlib1g-dev \
+    lubuntu-desktop
+# lubuntu is only for gui if forwarding not working
 
 # Webpack expects node
-sudo ln -s /usr/bin/nodejs /usr/bin/node
+ln -s /usr/bin/nodejs /usr/bin/node
 
-wget https://bootstrap.pypa.io/get-pip.py
-sudo python ./get-pip.py
-rm get-pip.py
-sudo pip install -U Flask Flask-Cache PyYAML html5lib lxml nose python-dateutil requests rethinkdb termcolor
-sudo pip install -U configparser python-slugify
+curl -s https://bootstrap.pypa.io/get-pip.py > /tmp/get-pip.py
+python /tmp/get-pip.py
+pip install -U Flask Flask-Cache PyYAML html5lib lxml nose python-dateutil \
+    requests rethinkdb termcolor configparser python-slugify
 
 cd /vagrant
-sudo gem update --system
-sudo gem install bundler
-sudo npm install -g webpack
+gem update --system
+gem install bundler
+npm install -g webpack
 EOF
 
 $user = <<EOF
@@ -47,6 +51,7 @@ if [ ! -e ~/.my_scripts ]; then
   vim +PlugInstall +qa >/dev/null 2>&1
 fi
 
+# FIXME: Not sure mounted in time
 echo "cd /vagramt && make >/dev/null 2>&1 &" >> ~/.lbashrc
 
 cd /vagrant
