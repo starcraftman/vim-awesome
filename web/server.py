@@ -74,5 +74,9 @@ def crash():
 
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run(host='0.0.0.0', port=5001)
+    if app.config['ENV'] == 'dev':
+        app.debug = True
+        # To allow connections over vagrant forwarded port
+        app.run(host='0.0.0.0', port=5001)
+    else:
+        app.run(port=5001)
