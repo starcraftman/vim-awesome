@@ -9,6 +9,7 @@
 # Sets cpu/memory to a good value above default, speeds up VM.
 
 $root = <<EOF
+export DEBIAN_FRONTEND=noninteractive
 source /etc/lsb-release && echo "deb http://download.rethinkdb.com/apt $DISTRIB_CODENAME main" | sudo tee /etc/apt/sources.list.d/rethinkdb.list
 wget -qO- https://download.rethinkdb.com/apt/pubkey.gpg | sudo apt-key add -
 apt-get update -y
@@ -54,7 +55,7 @@ bundle install
 npm install
 
 echo "alias fstart='make -C /vagrant >/tmp/server.log 2>&1 &'" >> ~/.lbashrc
-echo "alias flog='tail -n 50 /tmp/server.log" >> ~/.lbashrc
+echo "alias flog='tail -n 50 /tmp/server.log'" >> ~/.lbashrc
 make -C /vagrant &
 sleep 5
 make init_db
