@@ -7,7 +7,7 @@ lxml==3.2.1
 html5lib==1.0b1
 termcolor==1.1.0
 python-dateutil==2.1
-nose==1.1.2
+pytest
 Flask-Cache==0.12
 PyYAML==3.11
 

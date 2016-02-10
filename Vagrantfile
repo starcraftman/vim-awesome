@@ -29,7 +29,7 @@ ln -s /usr/bin/nodejs /usr/bin/node
 
 curl -s https://bootstrap.pypa.io/get-pip.py > /tmp/get-pip.py
 python /tmp/get-pip.py
-pip install -U Flask Flask-Cache PyYAML html5lib lxml nose python-dateutil \
+pip install -U Flask Flask-Cache PyYAML html5lib lxml pytest python-dateutil \
     requests rethinkdb termcolor configparser python-slugify
 
 gem update --system

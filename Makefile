@@ -36,7 +36,7 @@ build_github_index:
 	PYTHONPATH=. python tools/scrape/build_github_index.py
 
 test:
-	PYTHONPATH=. nosetests -v
+	PYTHONPATH=. py.test -v test
 
 dump:
 	rethinkdb dump -e vim_awesome -f rethinkdb_dump.tar.gz

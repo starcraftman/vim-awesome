@@ -1,3 +1,7 @@
+.cache
+.venv
+.vagrant
+
 *.py[co]
 .sass-cache/
 db/rethinkdb_data/
