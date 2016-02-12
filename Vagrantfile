@@ -21,8 +21,8 @@ apt-get install -y \
     rethinkdb npm exuberant-ctags silversearcher-ag ack-grep \
     ruby ruby-dev python-dev pandoc sphinx-common \
     libyaml-dev libxml2-dev libxslt-dev zlib1g-dev \
-    lubuntu-desktop
-# lubuntu adds many packages, installs a small light gui you can use firefox from to see site
+#    lubuntu-desktop
+# lubuntu adds many packages, small standard gui though
 
 # Webpack expects node
 ln -s /usr/bin/nodejs /usr/bin/node
@@ -43,11 +43,9 @@ if [ ! -e ~/.my_scripts ]; then
   git clone --depth 1 https://github.com/starcraftman/.my_scripts/ ~/.my_scripts
   rm ~/.bashrc
   python .my_scripts/SysInstall.py home_save home
-  sed --in-place -e "s/Plug 'Valloric.*//" ~/.vimrc
   echo "vim +Bootstrap +qa >/dev/null 2>&1"
   vim +Bootstrap +qa >/dev/null 2>&1
-  echo "vim +PlugInstall +qa >/dev/null 2>&1"
-  vim +PlugInstall +qa >/dev/null 2>&1
+  ln -s ~/.sync_plugged ~/.vim/plugged
 fi
 
 cd /vagrant
@@ -65,7 +63,6 @@ if [ ! -f rethinkdb_dump_2015-12-15.tar.gz ]; then
   curl -fLo rethinkdb_dump_2015-12-15.tar.gz https://dl.dropboxusercontent.com/u/18795947/rethinkdb_dump_2015-12-15.tar.gz
 fi
 rethinkdb restore --force -i vim_awesome ./rethinkdb_dump_2015-12-15.tar.gz
-echo "Please execute on host: vagrant reload"
 EOF
 
 Vagrant.require_version ">= 1.5.0"
@@ -91,4 +88,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :forwarded_port, guest: 5001, host: 5000
   config.vm.provision :shell, :inline => $root
   config.vm.provision :shell, :inline => $user, privileged: false
+  config.vm.provision "file", source: "~/.ssh/known_hosts", destination: "~/.ssh/known_hosts"
+  config.vm.synced_folder "~/.vim/plugged", "/home/vagrant/.sync_plugged"
 end
