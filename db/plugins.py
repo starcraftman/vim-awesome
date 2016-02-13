@@ -542,15 +542,14 @@ def get_search_index():
     # Don't show plugin managers because they're not technically plugins, and
     # also our usage counts for them are not all accurate.
     print str(query), str(r)
-    # FIXME(starcraftman): r.all is absent
-    # query = query.filter(r.all(
-        # r.row['slug'] != 'vundle',
-        # r.row['slug'] != 'neobundle-vim',
-        # r.row['slug'] != 'neobundle-vim-back-to-december',
-        # r.row['slug'] != 'pathogen-vim',
-    # ))
-
     plugins = map(to_json, query.run(r_conn()))
+    def not_manager(item):
+        for blocked in ['vundle', 'neobundle', 'pathogen']:
+            if item['slug'].lower().find(blocked) == 0:
+                return False
+        return True
+    plugins = [plugin for plugin in plugins if not_manager(plugin)]
+
 
     # We can't order_by on multiple fields with secondary indexes due to the
     # following RethinkDB bug: https://github.com/rethinkdb/docs/issues/160

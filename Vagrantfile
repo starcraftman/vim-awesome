@@ -89,5 +89,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, :inline => $root
   config.vm.provision :shell, :inline => $user, privileged: false
   config.vm.provision "file", source: "~/.ssh/known_hosts", destination: "~/.ssh/known_hosts"
-  config.vm.synced_folder "~/.vim/plugged", "/home/vagrant/.sync_plugged"
+  config.vm.synced_folder "~/.vim/plugged", "/home/vagrant/.sync_plugged", type: "rsync"
 end
